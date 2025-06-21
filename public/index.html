@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unshorten Link</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🔗 Unshorten Link</h1>
+    <form id="unshortenForm">
+      <input type="url" id="urlInput" placeholder="Dán link rút gọn vào đây..." required />
+      <button type="submit">Xem link gốc</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('unshortenForm');
+    const input = document.getElementById('urlInput');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      result.innerHTML = "⏳ Đang kiểm tra...";
+      const url = input.value;
+
+      const res = await fetch('/api/unshorten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await res.json();
+      if (data.originalUrl) {
+        result.innerHTML = `✅ Link gốc: <a href="${data.originalUrl}" target="_blank">${data.originalUrl}</a>`;
+      } else {
+        result.innerHTML = `❌ Lỗi: ${data.error}`;
+      }
+    });
+  </script>
+</body>
+</html>
