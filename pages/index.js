@@ -51,7 +51,7 @@ export default function Home() {
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="url"
-            className={styles.input}       {/* ✅ Thêm class */}
+            className={styles.input}  
             placeholder="Dán link rút gọn vào đây..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -59,7 +59,7 @@ export default function Home() {
           />
           <button
             type="submit"
-            className={styles.button}      {/* ✅ Thêm class */}
+            className={styles.button} 
             disabled={loading}
           >
             {loading ? '⏳ Đang kiểm tra...' : 'Xem link gốc'}
