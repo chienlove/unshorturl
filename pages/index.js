@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
 import Layout from '../components/Layout';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClipboard } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home() {
   const [url, setUrl] = useState('');
@@ -69,7 +71,9 @@ export default function Home() {
         {result && (
           <div className={styles.result}>
             ✅ Link gốc: <a href={result} target="_blank" rel="noopener noreferrer">{result}</a>
-            <button className={styles.button} onClick={() => navigator.clipboard.writeText(result)}>📋 Sao chép</button>
+            <button className={styles.copyBtn} onClick={() => navigator.clipboard.writeText(result)}>
+  <FontAwesomeIcon icon={faClipboard} /> Sao chép
+</button>
           </div>
         )}
 
