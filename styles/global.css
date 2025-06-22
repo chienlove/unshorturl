@@ -1,37 +1,33 @@
+:root {
+  --bg-color: #f0f0f5;
+  --text-color: #222;
+  --link-color: #0070f3;
+  --button-bg: #0070f3;
+  --button-hover: #0055cc;
+}
+
+[data-theme='dark'] {
+  --bg-color: #1e1e1e;
+  --text-color: #f0f0f0;
+  --link-color: #33aaff;
+  --button-bg: #333;
+  --button-hover: #555;
+}
+
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #83a4d4, #b6fbff);
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
 }
 
-h1 {
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-input[type="url"] {
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
+a {
+  color: var(--link-color);
 }
 
 button {
-  padding: 10px;
-  background: #0070f3;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
+  background: var(--button-bg);
 }
 
 button:hover {
-  background: #0059c1;
+  background: var(--button-hover);
 }

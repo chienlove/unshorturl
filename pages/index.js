@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
+import Layout from '../components/Layout';
 
 export default function Home() {
   const [url, setUrl] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('history') || '[]');
+    setHistory(saved);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setResult('');
+    if (!url) return;
+
     setLoading(true);
+    setResult('');
 
     try {
       const res = await fetch('/api/unshorten', {
@@ -20,33 +29,74 @@ export default function Home() {
 
       const data = await res.json();
       if (data.originalUrl) {
-        setResult(`✅ Link gốc: ${data.originalUrl}`);
+        setResult(data.originalUrl);
+        const newItem = { short: url, original: data.originalUrl };
+        const updated = [newItem, ...history].slice(0, 10);
+        setHistory(updated);
+        localStorage.setItem('history', JSON.stringify(updated));
       } else {
-        setResult(`❌ Lỗi: ${data.error}`);
+        setResult(`❌ ${data.error}`);
       }
-    } catch (error) {
-      setResult('❌ Có lỗi xảy ra khi gửi yêu cầu.');
+    } catch {
+      setResult('❌ Có lỗi xảy ra.');
     }
 
     setLoading(false);
   };
 
   return (
-    <div className={styles.container}>
-      <h1>🔗 Unshorten Link</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input
-          type="url"
-          placeholder="Dán link rút gọn vào đây..."
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          required
+    <Layout>
+      <div className={styles.container}>
+        <h1>🔗 Unshorten Link</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="url"
+            placeholder="Dán link rút gọn vào đây..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? '⏳ Đang kiểm tra...' : 'Xem link gốc'}
+          </button>
+        </form>
+        {result && (
+          <div className={styles.result}>
+            ✅ Link gốc: <a href={result} target="_blank" rel="noopener noreferrer">{result}</a>
+            <button onClick={() => navigator.clipboard.writeText(result)}>📋 Sao chép</button>
+          </div>
+        )}
+
+        <div className={styles.history}>
+          <h3>Lịch sử</h3>
+          <ul>
+            {history.map((item, idx) => (
+              <li key={idx}>
+                <span>{item.short}</span> ➝ <a href={item.original} target="_blank" rel="noreferrer">{item.original}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "Unshorten Link",
+              "url": "https://yourdomain.com",
+              "applicationCategory": "Utility",
+              "operatingSystem": "All",
+              "description": "Công cụ mở rộng link rút gọn miễn phí",
+              "creator": {
+                "@type": "Person",
+                "name": "Tên của bạn"
+              }
+            })
+          }}
         />
-        <button type="submit">Xem link gốc</button>
-      </form>
-      <div className={styles.result}>
-        {loading ? '⏳ Đang kiểm tra...' : result}
       </div>
-    </div>
+    </Layout>
   );
 }
