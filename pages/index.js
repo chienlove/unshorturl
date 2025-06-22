@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <Layout>
       <div className={styles.container}>
-        <h1>🔗 Unshorten Link</h1>
+        <h1><FontAwesomeIcon icon={faLink} /> Unshorten Link</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="url"
