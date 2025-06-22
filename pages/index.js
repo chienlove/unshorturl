@@ -11,6 +11,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false); // ✅ loading state
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('history') || '[]');
@@ -24,6 +25,7 @@ export default function Home() {
     setResult('');
     setError('');
     setCopied(false);
+    setLoading(true); // ✅ bắt đầu loading
 
     try {
       const res = await fetch('/api/unshorten', {
@@ -51,6 +53,8 @@ export default function Home() {
     } catch {
       setError('❌ Có lỗi xảy ra khi gửi yêu cầu.');
     }
+
+    setLoading(false); // ✅ kết thúc loading
   };
 
   const handleCopy = () => {
@@ -65,11 +69,11 @@ export default function Home() {
         <h1><FontAwesomeIcon icon={faLink} /> Unshorten Link</h1>
 
         <div className={styles.intro}>
-          <p><strong>Giới thiệu:</strong> Đây là công cụ giúp bạn kiểm tra <strong>link gốc</strong> của các liên kết rút gọn như <code>bit.ly</code>, <code>tinyurl</code>, <code>is.gd</code>,... hoàn toàn miễn phí.</p>
-          <p><strong>Hỗ trợ:</strong> Liên kết dạng rút gọn HTTP/S đơn thuần. Không hỗ trợ:
+          <p><strong>Giới thiệu:</strong> Công cụ kiểm tra <strong>link gốc</strong> từ các liên kết rút gọn như <code>bit.ly</code>, <code>tinyurl</code>, <code>is.gd</code>,... miễn phí.</p>
+          <p><strong>Hỗ trợ:</strong> HTTP/S link rút gọn. Không hỗ trợ:
             <ul>
-              <li>Liên kết có mã token (Google Drive, Dropbox…)</li>
-              <li>Liên kết cần xác thực đăng nhập</li>
+              <li>Link có token riêng (Google Drive, Dropbox…)</li>
+              <li>Link yêu cầu đăng nhập</li>
             </ul>
           </p>
         </div>
@@ -83,10 +87,12 @@ export default function Home() {
             onChange={(e) => setUrl(e.target.value)}
             required
           />
-          <button type="submit" className={styles.button}>
-            {result || error ? '🔁 Kiểm tra lại' : '🔍 Xem link gốc'}
+          <button type="submit" className={styles.button} disabled={loading}>
+            {loading ? '⏳ Đang kiểm tra...' : (result || error ? '🔁 Kiểm tra lại' : '🔍 Xem link gốc')}
           </button>
         </form>
+
+        {loading && <div className={styles.loading}>Đang xử lý link...</div>}
 
         {error && (
           <div className={`${styles.resultBox} ${styles.error}`}>
