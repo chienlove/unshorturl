@@ -1,15 +1,14 @@
 .container {
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
   text-align: center;
+  padding: 2rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-width: 500px;
+  width: 100%;
+  max-width: 400px;
   margin: 0 auto;
 }
 
@@ -21,17 +20,47 @@
 }
 
 .button {
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
+  background-color: var(--button-bg);
+  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s;
 }
 
-.result {
+.button:hover {
+  background-color: var(--button-hover);
+}
+
+.resultBox {
+  background: rgba(255, 255, 255, 0.9);
+  color: inherit;
+  padding: 1rem;
   margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
   word-break: break-word;
+}
+
+.resultBox a {
+  font-weight: bold;
+  color: var(--link-color);
+}
+
+.copyBtn {
+  margin-top: 10px;
+  background: #28a745;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.copyBtn:hover {
+  background: #218838;
 }
 
 .history {
@@ -40,4 +69,21 @@
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.darkToggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.darkToggle:hover {
+  background: var(--button-hover);
 }

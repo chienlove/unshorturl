@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import styles from '../styles/Home.module.css';
 
 export default function Layout({ children }) {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('theme') === 'dark';
-    document.documentElement.setAttribute('data-theme', saved ? 'dark' : 'light');
     setDark(saved);
+    document.documentElement.setAttribute('data-theme', saved ? 'dark' : 'light');
   }, []);
 
   const toggleTheme = () => {
@@ -20,12 +21,10 @@ export default function Layout({ children }) {
 
   return (
     <>
+      <button onClick={toggleTheme} className={styles.darkToggle}>
+        {dark ? '🌞 Sáng' : '🌙 Tối'}
+      </button>
       <Header />
-      <div style={{ textAlign: 'center', paddingBottom: '10px' }}>
-        <button onClick={toggleTheme}>
-          {dark ? '🌞 Chế độ sáng' : '🌙 Chế độ tối'}
-        </button>
-      </div>
       <main>{children}</main>
       <Footer />
     </>
