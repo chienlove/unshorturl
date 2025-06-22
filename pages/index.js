@@ -51,19 +51,25 @@ export default function Home() {
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="url"
+            className={styles.input}       {/* ✅ Thêm class */}
             placeholder="Dán link rút gọn vào đây..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             required
           />
-          <button type="submit" disabled={loading}>
+          <button
+            type="submit"
+            className={styles.button}      {/* ✅ Thêm class */}
+            disabled={loading}
+          >
             {loading ? '⏳ Đang kiểm tra...' : 'Xem link gốc'}
           </button>
         </form>
+
         {result && (
           <div className={styles.result}>
             ✅ Link gốc: <a href={result} target="_blank" rel="noopener noreferrer">{result}</a>
-            <button onClick={() => navigator.clipboard.writeText(result)}>📋 Sao chép</button>
+            <button className={styles.button} onClick={() => navigator.clipboard.writeText(result)}>📋 Sao chép</button>
           </div>
         )}
 
