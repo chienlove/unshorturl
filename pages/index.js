@@ -3,6 +3,7 @@ import styles from '../styles/Home.module.css';
 import Layout from '../components/Layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClipboard } from '@fortawesome/free-solid-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home() {
   const [url, setUrl] = useState('');
