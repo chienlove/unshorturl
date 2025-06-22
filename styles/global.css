@@ -15,12 +15,13 @@
 }
 
 body {
+  font-family: 'Segoe UI', sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
-  transition: background 0.3s, color 0.3s;
-  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
 }
 
 a {
@@ -30,18 +31,4 @@ a {
 
 a:hover {
   text-decoration: underline;
-}
-
-button {
-  background: var(--button-bg);
-  color: white;
-}
-
-button:hover {
-  background: var(--button-hover);
-}
-
-input {
-  color: inherit;
-  background: inherit;
 }

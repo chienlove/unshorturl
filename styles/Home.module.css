@@ -3,10 +3,18 @@
   padding: 2rem;
 }
 
+.description {
+  max-width: 600px;
+  margin: 0 auto 1.5rem auto;
+  font-size: 15px;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
@@ -35,32 +43,49 @@
 }
 
 .resultBox {
-  background: rgba(255, 255, 255, 0.9);
-  color: inherit;
-  padding: 1rem;
   margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  word-break: break-word;
+  background: var(--bg-color);
+  border-left: 6px solid #28a745;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: left;
+  color: var(--text-color);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
 }
 
-.resultBox a {
+.resultBox.error {
+  border-left-color: #dc3545;
+}
+
+.resultBox.warning {
+  border-left-color: #ffc107;
+}
+
+.resultLink {
   font-weight: bold;
-  color: var(--link-color);
+  font-size: 16px;
+  word-break: break-word;
 }
 
 .copyBtn {
   margin-top: 10px;
-  background: #28a745;
+  background: #0070f3;
   color: white;
   padding: 6px 12px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
 }
 
-.copyBtn:hover {
-  background: #218838;
+.copyFeedback {
+  color: green;
+  margin-top: 5px;
+  font-size: 14px;
 }
 
 .history {
