@@ -34,7 +34,7 @@ struct ProgressResponse: Codable {
     let appInfo: AppInfo?
 }
 
-struct AppInfo: Codable {
+struct AppInfo: Codable, Equatable {
     let name: String?
     let version: String?
     let size: String?
@@ -70,7 +70,7 @@ struct PurchaseTokenResponse: Codable {
 
 // MARK: - UI State Models
 
-enum DownloadStatus {
+enum DownloadStatus: Equatable {
     case idle
     case pending
     case downloading(progress: Double, message: String, detail: String)
