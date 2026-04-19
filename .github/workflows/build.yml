@@ -1,0 +1,99 @@
+name: Build IPA (Unsigned)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      scheme:
+        description: 'Scheme to build'
+        required: false
+        default: 'IPADLPro'
+
+jobs:
+  build:
+    name: Build Unsigned IPA
+    runs-on: macos-14
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Select Xcode version ──────────────────────────────────
+      - name: Select Xcode 15
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      # ── 3. Show available SDKs (debug) ───────────────────────────
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      # ── 4. Resolve Swift Package dependencies (if any) ───────────
+      - name: Resolve dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project IPADLPro.xcodeproj \
+            -scheme IPADLPro \
+            || echo "No SPM dependencies or already resolved"
+
+      # ── 5. Build Archive (no code signing) ───────────────────────
+      - name: Build Archive
+        run: |
+          xcodebuild archive \
+            -project IPADLPro.xcodeproj \
+            -scheme IPADLPro \
+            -configuration Release \
+            -archivePath ${{ github.workspace }}/build/IPADLPro.xcarchive \
+            -destination "generic/platform=iOS" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            | xcpretty || true
+
+      # ── 6. Package .app → .ipa manually ──────────────────────────
+      - name: Package IPA
+        run: |
+          APP_PATH=$(find ${{ github.workspace }}/build/IPADLPro.xcarchive \
+            -name "*.app" -maxdepth 4 | head -n 1)
+
+          if [ -z "$APP_PATH" ]; then
+            echo "❌ .app not found in archive!"
+            ls -la ${{ github.workspace }}/build/IPADLPro.xcarchive/Products/ || true
+            exit 1
+          fi
+
+          echo "✅ Found .app: $APP_PATH"
+
+          mkdir -p ${{ github.workspace }}/build/Payload
+          cp -R "$APP_PATH" ${{ github.workspace }}/build/Payload/
+
+          cd ${{ github.workspace }}/build
+          zip -r IPADLPro-unsigned.ipa Payload/
+          echo "✅ IPA created: $(du -sh IPADLPro-unsigned.ipa | cut -f1)"
+
+      # ── 7. Upload IPA as artifact ─────────────────────────────────
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IPADLPro-unsigned-${{ github.run_number }}
+          path: ${{ github.workspace }}/build/IPADLPro-unsigned.ipa
+          retention-days: 30
+          if-no-files-found: error
+
+      # ── 8. Show build summary ─────────────────────────────────────
+      - name: Build Summary
+        if: success()
+        run: |
+          echo "## ✅ Build thành công!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Thông tin | Giá trị |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| App | IPADL Pro |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build # | ${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **File IPA** có trong tab **Artifacts** ở trên." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ IPA này chưa được ký (unsigned). Bạn cần sign trước khi cài đặt." >> $GITHUB_STEP_SUMMARY
